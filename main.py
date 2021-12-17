@@ -31,4 +31,4 @@ app.include_router(auth.router)
 app.include_router(vote.router)
 
 
-# primeiro commit feito, apó deploy. 
+# heroku deployment 
