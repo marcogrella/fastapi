@@ -2,8 +2,8 @@ from typing import List, Optional
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-import models, schemas, oauth2 
-from database import get_db
+from app import models, schemas, oauth2 
+from app.database import get_db
 
 
 
@@ -19,18 +19,26 @@ router = APIRouter(
 # e do search Ex: {{URL}}posts?limit=5&skip=0&search=java (filtra tudo que há no título)
 # coloca-se o % no meio das palavras ficando tipo {{URL}}posts?limit=5&search=java%1
 
-#@router.get("/", response_model=List[schemas.Post])
-@router.get("/",)
+
+
+
+
+@router.get("/", response_model=List[schemas.PostOut])
 def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user),
     limit: int = 10, skip: int = 0, search: Optional[str] = ""):
     
-    posts = db.query (models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+    #posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     #posts = db.query (models.Post).limit(limit).offset(skip).all()
     #posts = db.query(models.Post).limit(limit).all()
     #posts = db.query(models.Post).all() 
 
     # faz a busca somente dos posts que pertencem ao usuario
     #posts = db.query(models.Post).filter(models.Post.user_id == current_user.id).all() 
+    
+    posts = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join( 
+        models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+    
+    return posts
 
     return posts
 

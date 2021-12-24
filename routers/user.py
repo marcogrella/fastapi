@@ -1,7 +1,7 @@
 from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-import schemas, utils, models, oauth2 
-from database import get_db 
+from app import schemas, utils, models, oauth2 
+from app.database import get_db 
 
 
 # objeto para roteamento, utilizado na classe principal.
@@ -12,8 +12,7 @@ router = APIRouter(
 
 
 @router.post("/", status_code = status.HTTP_201_CREATED, response_model=schemas.UserResponse)
-def create_posts(user: schemas.UserCreate, db: Session = Depends(get_db), 
-        current_user: int = Depends(oauth2.get_current_user)):
+def create_posts(user: schemas.UserCreate, db: Session = Depends(get_db)):
     
     # criar uma lógica que verifique se um email não está em uso. 
     userDB = db.query(models.User).filter(models.User.email == user.email).first()

@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from routers import user, post, auth, vote
-from database import engine
+from app.database import engine
 #import models
-import config
+import app.config
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -30,5 +30,7 @@ app.include_router(user.router)
 app.include_router(auth.router)
 app.include_router(vote.router)
 
-
+@app.get("/")
+def root():
+    return {"message": "FastAPI api is working"}
 # heroku deployment 

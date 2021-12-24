@@ -41,7 +41,8 @@ typing-extensions==4.0.0
 ujson==4.3.0
 urllib3==1.26.7
 uvicorn==0.15.0
-uvloop==0.16.0
+#uvloop==0.16.0
 watchgod==0.7
 websockets==10.1
 zipp==3.6.0
+pytest==6.2.5

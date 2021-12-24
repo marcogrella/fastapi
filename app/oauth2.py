@@ -2,10 +2,10 @@ from fastapi.param_functions import Depends
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from sqlalchemy.orm.session import Session
-import schemas, database, models
+from app import schemas, database, models
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from config import settings
+from app.config import settings
 
 
 # tokenUrl é o endpoint do login

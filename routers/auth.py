@@ -1,8 +1,8 @@
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from database import get_db
-import schemas, models, utils, oauth2
+from app.database import get_db
+from app import schemas, models, utils, oauth2
 
 
 
@@ -26,11 +26,11 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
         models.User.email == user_credentials.username).first()
 
     if not user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Creadentials")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
 
     # verifica se ambos as senhas são iguais 
     if not utils.verify(user_credentials.password, user.password):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Creadentials")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials")
 
     # gerando o token:
     # obs: no dicionário data é possível colocar no payload o que quiser, o ideal é não por senha.
