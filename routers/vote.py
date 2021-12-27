@@ -20,9 +20,9 @@ def vote(vote: schemas.Vote, db: Session = Depends(get_db),
 
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
-        detail=f"Vote with {vote.post_id} dois not exist" )
+        detail=f"Vote with {vote.post_id} does not exist" )
 
-    # faz a busca para verificar se existe um voto com mesmo id e user_id
+    # faz a busca para verificar se o voto já existe com o usuário que está tentando votar. 
     vote_query = db.query(models.Vote).filter(
         models.Vote.post_id == vote.post_id, models.Vote.user_id == current_user.id)
 
@@ -34,7 +34,7 @@ def vote(vote: schemas.Vote, db: Session = Depends(get_db),
             detail=f"user {current_user.id} has already voted on post {vote.post_id}")
 
         # adiciona o voto se não existir
-        new_vote = models.Vote(post_id = vote.post_id, user_id=current_user.id)  # caso false seta o voto
+        new_vote = models.Vote(post_id = vote.post_id, user_id=current_user.id)  # seta o voto
         db.add(new_vote)
         db.commit()
 

@@ -89,6 +89,20 @@ def test_user(client):
     user_data = {"email": "admin@email.com", "password": "admin"}
     res = client.post("/users/", json=user_data)
 
+    assert res.status_code == 201
+
+    new_user = res.json()
+    new_user['password'] = user_data['password']
+    return new_user
+
+
+@pytest.fixture
+def test_user_2(client):
+    user_data = {"email": "admin_2@email.com", "password": "admin_2"}
+    res = client.post("/users/", json=user_data)
+
+    assert res.status_code == 201
+
     new_user = res.json()
     new_user['password'] = user_data['password']
     return new_user
@@ -110,22 +124,27 @@ def authorized_client(client, token):
 
 
 @pytest.fixture
-def test_posts(test_user, session):
+def test_posts(test_user, session, test_user_2):
     posts_data = [{
         "title": "first title",
         "content": "first content",
         "user_id": test_user['id']
     }, {
-         "title": "second title",
+         "title": "2° title",
         "content": "second content",
         "user_id": test_user['id']
     } , {
-         "title": "third title",
+         "title": "3° title",
         "content": "third content",
         "user_id": test_user['id']
+    } , {
+         "title": "4° title",         # pertence ao usuário 2
+        "content": "fourth content",
+        "user_id": test_user_2['id']
+
     }]
 
-    # função para converter, para cada item de um dicionario, objetos do tipo Post
+    # função para converter, para cada item de um dicionario, objetos do tipo Post para salvar no bd
     def create_post_model(post):
         return models.Post(**post) # pega cada item (chave / valor e converte para Post)
 
